@@ -9,6 +9,8 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 repositories {
@@ -22,6 +24,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
+
+    //Gson for Json converting
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 application {
@@ -32,4 +37,9 @@ application {
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+javafx {
+    version = "17.0.0.1"
+    modules = [ 'javafx.controls' ]
 }

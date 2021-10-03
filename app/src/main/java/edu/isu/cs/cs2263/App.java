@@ -3,12 +3,144 @@
  */
 package edu.isu.cs.cs2263;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Main class to build the objects and UI
+ */
+public class App extends Application {
+    public App() {}
+    private static final class Helper {
+        private static final App INSTANCE = new App();
+    }
+    public static App instance() {
+        return Helper.INSTANCE;
     }
 
+    /**
+     * Initialization of the students and classes for saving.
+     */
+    public void init() {
+        List<Student> studentList = new ArrayList<>();
+        Student student1 = new Student("Show", "Pratoomratana");
+        Student student2 = new Student("John", "Jonny");
+        Student student3 = new Student("Sarah", "Sarith");
+        Course course1 = new Course(01, "CS 2263", "Advanced OOP");
+        Course course2 = new Course(02, "CS 3350", "Intro to Comp Theory");
+        Course course3 = new Course(03, "MATH 3350", "Statistics");
+        Course course4 = new Course(04, "MATH 3333", "Calculus");
+        student1.addCourse(course1); student1.addCourse(course2); student1.addCourse(course3); student1.addCourse(course4);
+        student2.addCourse(course1); student2.addCourse(course3);
+        student3.addCourse(course1);
+        studentList.add(student1);
+        studentList.add(student2);
+        studentList.add(student3);
+        IOManager saveStudents = new IOManager();
+        saveStudents.writeData("jsonListOfStudents.txt", studentList);
+    }
+
+    /**
+     * Creates a lists of students from the file specified
+     * @param file Json file
+     * @return a list of Students who contain a list of classes
+     * @throws IOException in case of a writing/reading error
+     */
+    public List<Student> loadData(String file) throws IOException {
+        IOManager load = new IOManager();
+        List<Student> studentData = load.readData(file);
+        return studentData;
+    }
+
+    /**
+     * Main UI functions here. Used a Flowplane and two ObservableList. The left list is a list of button to create the classes in the right list.
+     * @param stage
+     */
+    @Override
+    public void start(Stage stage) {
+
+        FlowPane listPane = new FlowPane();
+
+        ObservableList<Button> studentItems = FXCollections.observableArrayList();
+        ListView<Button> studentList = new ListView<>();
+        studentList.setMaxSize(200, 160);
+
+        ObservableList<String> courseItems = FXCollections.observableArrayList();
+        ListView<String> courseList = new ListView<>();
+        courseList.setMaxSize(200, 160);
+        courseList.setItems(courseItems);
+
+        Button button = new Button();
+        button.setText("Load students");
+        button.setTranslateX(-500);
+        button.setTranslateY(120);
+        button.setOnAction(event -> {
+            List<Student> stuData = null;
+            try {
+                stuData = loadData("jsonListOfStudents.txt");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (Student student : stuData) {
+                String studentButtonName = (student.getFirstName() + " " + student.getLastName());
+                Button stuButton = new Button(studentButtonName);
+                List<Student> studentCoureses = stuData;
+                stuButton.setOnAction(event1 -> {
+                    for (Student student1 : studentCoureses) {
+                        String curStuName = (student1.getFirstName() + " " + student1.getLastName());
+                        if (curStuName.equals(studentButtonName)) {
+                            List<Course> studentCourse = student1.getCourseList();
+                            courseItems.clear();
+                            for (Course course : studentCourse) {
+                                String courseTitle = course.getTitle();
+                                courseItems.add(courseTitle);
+                            }
+                            courseList.setItems(courseItems);
+                        }
+                    }
+                });
+                studentItems.add(stuButton);
+            }
+            //studentItems.addAll(stuData);
+            studentList.setItems(studentItems);
+        });
+
+        Label isTaking = new Label("is taking");
+        listPane.setAlignment(Pos.CENTER_LEFT);
+        listPane.setHgap(30);
+        listPane.getChildren().add(studentList);
+        listPane.getChildren().add(isTaking);
+        listPane.getChildren().add(courseList);
+        listPane.getChildren().add(button);
+
+        Scene scene = new Scene(listPane, 700, 400);
+        stage.setTitle("Student class directory");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Launches UI and initializes objects
+     * @param args
+     */
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        App app = new App();
+        app.init();
+        Application.launch();
     }
 }

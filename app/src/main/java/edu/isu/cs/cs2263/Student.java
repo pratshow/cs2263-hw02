@@ -50,13 +50,8 @@ public class Student {
      * Creates a string for the first and last name of the student and all of the classes they are enrolled in.
      * @return a string with the students name and list of classes
      */
-    public void makeString(){
-        String fullName = (firstName + " " + lastName);
-        String className = null;
-        for (Course course: courseList) {
-            className = (className + "\n" + course.getTitle());
-        }
-        System.out.println("The students name is " + fullName + "\n" + "they are enrolled in" + className);
+    public String getName(){
+        return (firstName + " " + lastName);
     }
 
     /**

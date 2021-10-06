@@ -29,7 +29,7 @@ public class IOManager {
     }
 
     /**
-     * Write data to a file for later retrieval
+     * Write data to a file for later retrieval. Saves a txt file in /src/main/java/edu/isu/cs/cs2263/jsonListOfStudents.txt
      * @param file file name for saving
      * @param data what data you would like to be saved (a list of students)
      */
@@ -37,7 +37,6 @@ public class IOManager {
         String json = gson.toJson(data);
         try{
             File newFile = new File("./src/main/java/edu/isu/cs/cs2263/" + file);
-            //newFile.createNewFile();
             FileWriter jsonFile = new FileWriter(newFile, false);
             jsonFile.write(json);
             jsonFile.close();

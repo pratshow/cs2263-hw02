@@ -6,9 +6,6 @@ package edu.isu.cs.cs2263;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Main class to build the objects and UI
@@ -63,8 +61,7 @@ public class App extends Application {
      */
     public List<Student> loadData(String file) throws IOException {
         IOManager load = new IOManager();
-        List<Student> studentData = load.readData(file);
-        return studentData;
+        return load.readData(file);
     }
 
     /**
@@ -96,6 +93,7 @@ public class App extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            studentItems.clear();
             for (Student student : stuData) {
                 String studentButtonName = (student.getFirstName() + " " + student.getLastName());
                 Button stuButton = new Button(studentButtonName);
